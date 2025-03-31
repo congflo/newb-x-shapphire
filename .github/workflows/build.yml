@@ -94,12 +94,12 @@ jobs:
       run: |
         ./build.sh setup
         ./build.sh pack -p ios
-        ./material-updater -t v1-21-20 -o ./build/nxa-ios.zip ./build/pack-ios.zip
+        ./material-updater -t v1-21-20 -o ./build/nxs-ios.zip ./build/pack-ios.zip
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: newb-x-ios
-        path: ./build/nxa-ios.zip
+        path: ./build/nxs-ios.zip
 
   merged:
     runs-on: windows-2022
