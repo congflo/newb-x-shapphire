@@ -84,6 +84,24 @@ galaxy = NL_GALAXY_STARS*galaxy;
 
   return sky;
 }
+
+float getHeightFromTex(vec2 uv, sampler2D tex) {
+	vec3 t = texture2D(tex, uv).rgb;
+return (t.x+t.y+t.z)/3.0;
+}
+
+vec4 getNormalMapFromTex(vec2 uv, vec2 resolution, float scale, sampler2D tex) {
+  vec2 step = 1.0 / resolution;
+
+  float height = getHeightFromTex(uv, tex);
+
+  vec2 dxy = height - vec2(
+      getHeightFromTex(uv + vec2(step.x, 0.0), tex),
+      getHeightFromTex(uv + vec2(0.0, step.y), tex)
+  );
+  return vec4(normalize(vec3(dxy * scale / step, 1.0)), height);
+}
+
 void main() {
   #if defined(DEPTH_ONLY_OPAQUE) || defined(DEPTH_ONLY) || defined(INSTANCING)
     gl_FragColor = vec4(1.0,1.0,1.0,1.0);
@@ -204,8 +222,12 @@ diffuse.rgb *= 1.0-dirfac*abs(normal.x);
  wavepower = 1.5;
  }
 vec3 waternormal = getWaterNormalMapFromHeight(v_position.xz*vec2(1.0,-1.0)+0.2*time, vec2(-4.0,2.0), wavepower, 0.2*time).xyz;
-vec3 viewD = reflect(viewDir, waternormal); //sky viewDir
- viewD.z = -viewD.z;
+//vec3 viewD = reflect(viewDir, waternormal); //sky viewDir
+ //viewD.z = -viewD.z;
+ 
+ //delete later
+ vec3 viewD = viewDir;
+ 
 vec3 c_vDir = normalize(v_color2.xyz);
 c_vDir = reflect(c_vDir, waternormal);
 c_vDir.yz = -c_vDir.yz;
@@ -284,7 +306,20 @@ if(!env.end){
     #define NL_UNDERWATER_TINT skycolor
     #undef NL_WATER_TINT
     #define NL_WATER_TINT skycolor
+
+//#define NORMALMAP
+
+#ifdef NORMALMAP
+vec3 nmTex = getNormalMapFromTex(v_texcoord0, vec2(15990.0,15990.0), 1.2, s_MatTexture).xzy;
     
+
+  float lightIntensity = max(dot(nmTex, normalize(vec3(1.0,1.0,0.5))), 0.0);
+    vec3 col = diffuse.rgb;
+    diffuse.rgb += diffuse.rgb*lightIntensity;
+    diffuse.rgb *= 0.8;
+    diffuse.rgb = mix(col, diffuse.rgb, 0.4);
+#endif
+
   if (v_extra.b > 0.9) {
   #ifdef WATER_REFLECTION
 

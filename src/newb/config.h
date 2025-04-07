@@ -235,7 +235,7 @@
  #undef MOON_BLOOM
  #undef SUN_REFL
  #define SUN_REFL 0.44
- #define SUN_BLOOM  vec3(0.15,0.15,0.14)*1.8
+ #define SUN_BLOOM  vec3(0.15,0.145,0.1275)*1.7
  #define MOON_BLOOM  vec3(0.15,0.20,0.25)*1.7
  //#define WATER_REFLECTION
  #undef NL_AURORA

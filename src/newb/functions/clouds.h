@@ -134,7 +134,7 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
 
   float c = cloudsNoiseVr(p, t);
   float d = cloudsNoiseVr(p + NL_CLOUD3_SHADOW_OFFSET*scale, t);
-  vec2 po = p;
+  
   float e = cloudsNoiseVr(p*0.8, t);
   c = mix(c, e, c);
   float f = cloudsNoiseVr(p*0.8 + NL_CLOUD3_SHADOW_OFFSET*scale, t);
@@ -142,7 +142,7 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
   
   // higher = less clouds thickness
   // lower separation betwen x & y = sharper
-  vec2 tr = mix(vec2(0.78, 0.88), vec2(0.78, 1.2), rain)- 0.35 - 0.24*rain;
+  vec2 tr = mix(vec2(0.78, 0.9), vec2(0.78, 1.2), rain)- 0.35 - 0.24*rain;
   vec2 trcd = mix(vec2(0.7, 0.85), vec2(0.7, 1.05), rain)- 0.35 - 0.26*rain;
   a = smoothstep(tr.x, tr.y, a);
   c = smoothstep(trcd.x, trcd.y, c);
@@ -156,8 +156,6 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
   col.rgb = 0.8*horizonCol;
   col.rgb = mix(col.rgb, zenithCol*0.95, shadow*mix(d, b, a));
   col.rgb *= 1.0-0.5*rain;
-  col.a = mix(col.a, col.a*0.95, c);
-  col.a = mix(col.a, col.a*0.95, d);
   
   return col;
 }

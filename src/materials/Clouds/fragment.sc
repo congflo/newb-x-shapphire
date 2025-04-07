@@ -34,14 +34,14 @@ void main() {
       vDir.xz *= 0.3 + v_color0.w; // height parallax
      float a = 0.8; // or -ve
      float cosa = cos(a); float sina = sin(a);
-
-      vec2 p = 3.0*vDir.xz/(0.08 + 0.25*abs(vDir.y));
+      
+      vec2 p = 3.3*vDir.xz/(0.08 + 0.25*abs(vDir.y));
            p = mul(p, mtxFromRows(vec2(cosa, sina), vec2(-sina, cosa)));
       vec4 clouds = renderClouds(p, v_color2.w, v_color1.w, v_color2.rgb, v_color1.rgb, NL_CLOUD3_SCALE, NL_CLOUD3_SPEED, NL_CLOUD3_SHADOW);
           float b = 0.8;
           float cosb = cos(b); float sinb = sin(b);
           
-          vec2 pc = 3.0*vDir.xz/(0.01 + 0.5*abs(vDir.y));
+          vec2 pc = 3.5*vDir.xz/(0.01 + 0.5*abs(vDir.y));
            pc = mul(pc, mtxFromRows(vec2(cosb, sinb), vec2(-sinb, cosb)));
       vec4 cirrus = renderCloudCirrus(pc, v_color2.w, v_color1.w, v_color2.rgb, v_color1.rgb, NL_CLOUD3_SCALE, NL_CLOUD3_SPEED, 0.1);
       clouds = mix(cirrus, clouds, 0.3+0.8*clouds.a);
