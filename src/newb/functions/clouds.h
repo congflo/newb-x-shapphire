@@ -86,7 +86,8 @@ vec4 renderCloudsRounded(
     d.y = mix(d.y, pos.y, m);
     pos += deltaP;
   }
-  d.x *= smoothstep(0.03, 0.1, d.x);
+  //d.y = smoothstep(0.2, 1.0, d.y*d.y);
+  d.x *= smoothstep(1.3, 1.5, d.x);
   d.x /= (stepsf/density) + d.x;
 
   if (vPos.y < 0.0) { // view from top
@@ -94,13 +95,8 @@ vec4 renderCloudsRounded(
   }
 
   vec4 col = vec4(zenithCol + horizonCol, d.x);
-  col.rgb = mix(col.rgb, horizonCol*0.8 + zenithCol,col.a)*0.8; // test
-  col.rgb += dot(col.rgb,zenithCol + horizonCol*0.7)*d.y*d.y; // test
-  col.rgb *= 1.0-0.3*col.a;
-  col.rgb *= 1.0 -0.2*smoothstep(0.0, 0.4, d.y);
-  
-  col.rgb *= 1.0 - 0.5*rain;
-  col.a *= 0.5;
+  col.rgb = mix(col.rgb, mix(col.rgb,zenithCol,0.8), smoothstep(1.0, 0.2,d.y)); 
+  col.a *= 0.85;
   return col;
 }
 
@@ -142,7 +138,7 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
   
   // higher = less clouds thickness
   // lower separation betwen x & y = sharper
-  vec2 tr = mix(vec2(0.78, 0.9), vec2(0.78, 1.2), rain)- 0.35 - 0.24*rain;
+  vec2 tr = mix(vec2(0.8, 0.9), vec2(0.8, 1.2), rain)- 0.35 - 0.24*rain;
   vec2 trcd = mix(vec2(0.7, 0.85), vec2(0.7, 1.05), rain)- 0.35 - 0.26*rain;
   a = smoothstep(tr.x, tr.y, a);
   c = smoothstep(trcd.x, trcd.y, c);
@@ -153,7 +149,7 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
 
   vec4 col;
   col.a = c + a*(1.0-c);
-  col.rgb = 0.8*horizonCol;
+  col.rgb = 0.5*horizonCol;
   col.rgb = mix(col.rgb, zenithCol*0.95, shadow*mix(d, b, a));
   col.rgb *= 1.0-0.5*rain;
   
@@ -194,7 +190,7 @@ vec4 renderCloudCirrus(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenith
 
   vec4 col;
   col.a = a + c*(1.0-a);
-  col.rgb = horizonCol;
+  col.rgb = 0.5*horizonCol;
   col.rgb = mix(col.rgb, zenithCol, shadow*mix(b, d, c));
   col.rgb *= 1.0-0.5*rain;
   return col;

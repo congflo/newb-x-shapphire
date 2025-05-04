@@ -30,6 +30,10 @@ void main() {
   vec3 pos = a_position;
   vec3 worldPos;
 
+  float day = pow(max(min(1.0 - FogColor.r * 1.2, 1.0), 0.0), 0.4);
+  float night = pow(max(min(1.0 - FogColor.r * 1.5, 1.0), 0.0), 1.2);
+  float dusk = max(FogColor.r - FogColor.b, 0.0);
+  
   #if NL_CLOUD_TYPE <= 2
 
     vec4 color;
@@ -37,19 +41,15 @@ void main() {
     #if NL_CLOUD_TYPE == 0
       pos.y *= (NL_CLOUD0_THICKNESS + rain*(NL_CLOUD0_RAIN_THICKNESS - NL_CLOUD0_THICKNESS));
       worldPos = mul(model, vec4(pos, 1.0)).xyz;
-      /*
-      color.rgb = 0.8*skycol.horizon;
-      color.rgb += dot(color.rgb, skycol.zenith)*a_position.y*a_position.y;
-      color.rgb += mix(skycol.horizon, skycol.zenith, smoothstep(1.0, 0.6, a_position.y));
-      */
       
-      color.rgb = skycol.horizon;
-      color.rgb = mix(skycol.horizon, skycol.zenith,smoothstep(0.0, 0.4, a_position.y));
+      color.rgb = skycol.horizonEdge;
+      color.rgb += NL_DAWN_ZENITH_COL*max(0.0, 1.0)*dusk;
+      color.rgb = mix(color.rgb,mix(skycol.horizon, skycol.zenith, 0.95),smoothstep(0.0, 0.4, a_position.y));
       color.rgb *= 1.0 - 0.5*rain;
       color.rgb = colorCorrection(color.rgb);
       
-
-      color.a = NL_CLOUD0_OPACITY * fog_fade(worldPos.xyz);
+      float cloudFade = smoothstep(6.5,0.0,length((worldPos.xyz)*vec3(0.01,0.005,0.01)));
+      color.a = NL_CLOUD0_OPACITY * cloudFade;//fog_fade(worldPos.xyz);
 
       // clouds.png has two non-overlaping layers:
       // r=unused, g=layers, b=reference, a=unused
@@ -94,6 +94,8 @@ void main() {
         color.a *= fade;
         color.rgb = colorCorrection(color.rgb);
       #else // NL_CLOUD_TYPE 2
+        
+        worldPos.xz *= 10.0;
         v_fogColor = FogColor.rgb;
         v_color1 = vec4(skycol.zenith, rain);
         v_color2 = vec4(skycol.horizonEdge, ViewPositionAndTime.w);

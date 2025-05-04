@@ -30,14 +30,14 @@
 /* Color correction */
 #define NL_TONEMAP_TYPE 4              // 1:Exponential, 2:Reinhard, 3:Extended Reinhard, 4:ACES
 #define NL_GAMMA 1.35                  // 0.3 low ~ 2.0 high
-#define NL_EXPOSURE 1.0              // [toggle] 0.5 dark ~ 3.0 bright
-#define NL_SATURATION 1.1            // [toggle] 0.0 grayscale ~ 4.0 super saturated
+#define NL_EXPOSURE 1.12              // [toggle] 0.5 dark ~ 3.0 bright
+#define NL_SATURATION 1.0            // [toggle] 0.0 grayscale ~ 4.0 super saturated
 //#define NL_TINT                      // [toggle] enable light/dark tone tinting
 #define NL_TINT_LOW  vec3(0.3,0.5,1.4) // color tint for dark tone
 #define NL_TINT_HIGH vec3(1.4,0.7,0.3) // color tint for light tone
 
 /* Terrain lighting */
-#define NL_SUN_INTENSITY 2.8   // 0.5 weak ~ 5.0 bright
+#define NL_SUN_INTENSITY 3.2   // 0.5 weak ~ 5.0 bright
 #define NL_TORCH_INTENSITY 1.5  // 0.5 weak ~ 3.0 bright
 #define NL_NIGHT_BRIGHTNESS 0.3 // 0.0 dark ~ 2.0 bright
 #define NL_CAVE_BRIGHTNESS 0.5  // 0.0 dark ~ 2.0 bright
@@ -46,8 +46,8 @@
 //#define NL_CLOUD_SHADOW       // [toggle] cloud shadow (simple clouds only)
 
 /* Sun/moon light color on terrain */
-#define NL_MORNING_SUN_COL vec3(0.9,0.45,0.0)
-#define NL_NOON_SUN_COL    vec3(1.0,1.0,0.98)
+#define NL_MORNING_SUN_COL vec3(0.9,0.38,0.0)
+#define NL_NOON_SUN_COL    vec3(1.0,1.0,0.99)
 #define NL_NIGHT_SUN_COL   vec3(0.28,0.37,0.56)
 
 /* Ambient light on terrain (light that is added everywhere) */
@@ -67,16 +67,16 @@
 #define NL_CLOUDY_FOG 0.3         // [toggle] 0.0 subtle - 0.8 dense fog clouds
 
 /* Sky colors - zenith=top, horizon=bottom */
-#define NL_DAY_ZENITH_COL    vec3(0.03,0.33,0.82)
-#define NL_DAY_HORIZON_COL   vec3(1.0, 1.0, 1.0)
-#define NL_NIGHT_ZENITH_COL  vec3(0.0,0.015,0.08)
-#define NL_NIGHT_HORIZON_COL vec3(0.0,0.15,0.32)
-#define NL_RAIN_ZENITH_COL   vec3(0.7,0.7,0.7)
-#define NL_RAIN_HORIZON_COL  vec3(0.7,0.7,0.7)
+#define NL_DAY_ZENITH_COL    vec3(0.05,0.32, 0.75)
+#define NL_DAY_HORIZON_COL   vec3(1.0, 1.0, 1.0)*1.5
+#define NL_NIGHT_ZENITH_COL  vec3(0.0,0.05,0.1)
+#define NL_NIGHT_HORIZON_COL vec3(0.0,0.25,0.5)*1.2
+#define NL_RAIN_ZENITH_COL   vec3(0.5,0.5,0.6)
+#define NL_RAIN_HORIZON_COL  vec3(1.0,1.0,1.1)
 #define NL_END_ZENITH_COL    vec3(0.0,0.03,0.05)
 #define NL_END_HORIZON_COL   vec3(0.0,0.21,0.829)
-#define NL_DAWN_ZENITH_COL   vec3(0.12,0.11,0.11)
-#define NL_DAWN_HORIZON_COL  vec3(1.0,0.2,0.0)
+#define NL_DAWN_ZENITH_COL   vec3(0.23,0.2,0.23)
+#define NL_DAWN_HORIZON_COL  vec3(1.5,0.2,0.0)*2.0
 #define NL_DAWN_EDGE_COL     vec3(1.0,1.0,1.0)
 
 /* Rainbow */
@@ -123,7 +123,7 @@
 /* Vanilla cloud settings - make sure to remove clouds.png when using this */
 #define NL_CLOUD0_THICKNESS 2.3      // 0.5 slim ~ 8.0 fat
 #define NL_CLOUD0_RAIN_THICKNESS 2.5 // 0.5 slim ~ 8.0 fat
-#define NL_CLOUD0_OPACITY 0.3        // 0.0 invisible ~ 1.0 opaque
+#define NL_CLOUD0_OPACITY 0.35        // 0.0 invisible ~ 1.0 opaque
 #define NL_CLOUD0_MULTILAYER         // [toggle] extra cloud layer
 
 /* Soft cloud settings */
@@ -136,7 +136,7 @@
 /* Rounded cloud settings */
 #define NL_CLOUD2_THICKNESS 2.4      // 0.5 slim ~ 5.0 fat
 #define NL_CLOUD2_RAIN_THICKNESS 2.6 // 0.5 slim ~ 5.0 fat
-#define NL_CLOUD2_STEPS 8            // 3 low quality ~ 16 high quality
+#define NL_CLOUD2_STEPS 9            // 3 low quality ~ 16 high quality
 #define NL_CLOUD2_SCALE vec2(0.025, 0.025)     // 0.003 large ~ 0.3 tiny
 #define NL_CLOUD2_SHAPE vec2(0.9, 0.9)       // 0.0 round ~ 1.0 box
 #define NL_CLOUD2_DENSITY 100.0       // 1.0 blurry ~ 100.0 sharp
@@ -161,10 +161,10 @@
 /* Aurora settings */
 #define NL_AURORA 3.0           // [toggle] 0.4 dim ~ 4.0 very bright
 #define NL_AURORA_VELOCITY 0.05 // 0.0 static ~ 0.3 very fast
-#define NL_AURORA_SCALE 0.08    // 0.002 large ~ 0.4 tiny
+#define NL_AURORA_SCALE 0.07    // 0.002 large ~ 0.4 tiny
 #define NL_AURORA_WIDTH 0.2    // 0.04 thin line ~ 0.4 thick lines
-#define NL_AURORA_COL1 vec3(0.0,0.77,1.0)*1.5
-#define NL_AURORA_COL2 vec3(0.16,0.31,0.77)*1.5
+#define NL_AURORA_COL1 vec3(0.0,0.75,1.0)*1.75
+#define NL_AURORA_COL2 vec3(0.13,0.3,0.77)*1.75
 
 
 /* Shooting star */
@@ -183,17 +183,17 @@
 
 /* Sun/Moon */
 #define NL_SUNMOON_ANGLE 30.0 // [toggle] 0.0 no tilt ~ 90.0 tilt of 90 degrees
-#define NL_SUNMOON_SIZE 1.0     // 0.3 tiny ~ 4.0 massive
-#define SUN_BLOOM  vec3(0.15,0.15,0.15)*1.5
-#define MOON_BLOOM  vec3(0.15,0.20,0.25)*1.5
-#define SUN_REFL 0.8
+#define NL_SUNMOON_SIZE 0.8     // 0.3 tiny ~ 4.0 massive
+#define SUN_BLOOM  vec3(0.25,0.24,0.245)
+#define MOON_BLOOM  vec3(0.15,0.25,0.3)*1.5
+#define SUN_REFL 0.5
  
 /* Fake godrays during sunrise/sunset */
 #define NL_GODRAY 0.45 // [toggle] 0.1 subtle ~ 0.8 strong
 
 /* Sky reflection */
-#define NL_GROUND_REFL 0.1       // [toggle] 0.2 slightly reflective ~ 1.0 fully reflect sky 
-#define NL_GROUND_RAIN_WETNESS 1.5 // 0.0 no wetness ~ 1.0 fully wet blocks when raining
+#define NL_GROUND_REFL 0.05       // [toggle] 0.2 slightly reflective ~ 1.0 fully reflect sky 
+#define NL_GROUND_RAIN_WETNESS 3.0 // 0.0 no wetness ~ 1.0 fully wet blocks when raining
 #define NL_GROUND_RAIN_PUDDLES 1.5 // 0.0 no puddles ~ 1.0 puddles
 //#define NL_GROUND_AURORA_REFL    // [toggle] aurora reflection on ground
 
@@ -213,6 +213,7 @@
 
 /* Extra Quality */
 //#define WATER_REFLECTION
+//#define NORMALMAP
 
 /*
   NEWB SHADER SUBPACK CONFIG
@@ -226,6 +227,10 @@
   Build tool will enable corresponding flags when compiling. 
 */
 
+#ifdef DEFAULT_NORMALMAP
+#define NORMALMAP
+#endif
+
 #ifdef VOLUMETRIC_CLOUDS
  #undef NL_CLOUD_TYPE
  #define NL_CLOUD_TYPE 3
@@ -234,15 +239,31 @@
  #undef SUN_BLOOM
  #undef MOON_BLOOM
  #undef SUN_REFL
- #define SUN_REFL 0.44
- #define SUN_BLOOM  vec3(0.15,0.145,0.1275)*1.7
- #define MOON_BLOOM  vec3(0.15,0.20,0.25)*1.7
- //#define WATER_REFLECTION
+ #define SUN_REFL 0.3
+ #define SUN_BLOOM  vec3(0.3,0.25,0.2)*1.45 
+ #define MOON_BLOOM  vec3(0.15,0.25,0.3)*1.35
+ #undef NL_AURORA
+ #undef NL_WATER_CLOUD_REFLECTION
+#endif
+
+#ifdef VOLUMETRIC_CLOUDS_NORMALMAP
+ #define NORMALMAP
+ #undef NL_CLOUD_TYPE
+ #define NL_CLOUD_TYPE 3
+ #undef NL_SUNMOON_SIZE
+ #define NL_SUNMOON_SIZE 0.7
+ #undef SUN_BLOOM
+ #undef MOON_BLOOM
+ #undef SUN_REFL
+ #define SUN_REFL 0.3
+ #define SUN_BLOOM  vec3(0.3,0.25,0.2)*1.45 
+ #define MOON_BLOOM  vec3(0.15,0.25,0.3)*1.35
  #undef NL_AURORA
  #undef NL_WATER_CLOUD_REFLECTION
 #endif
  
 #ifdef VANILLA_CLOUD
+ #undef NORMALMAP
  #undef NL_GROUND_REFL
  #undef NL_CLOUD_TYPE
  #define NL_CLOUD_TYPE 0
@@ -270,5 +291,33 @@
  #undef NL_WATER_CLOUD_REFLECTION
 #endif
 
+#ifdef VANILLA_CLOUD_NORMALMAP
+ #define NORMALMAP
+ #undef NL_GROUND_REFL
+ #undef NL_CLOUD_TYPE
+ #define NL_CLOUD_TYPE 0
+ #undef NL_GROUND_RAIN_WETNESS 
+ #undef NL_GROUND_RAIN_PUDDLES 
+ #define NL_GROUND_RAIN_WETNESS 0.5 
+ #define NL_GROUND_RAIN_PUDDLES 0.5 
+ #undef NL_WATER_BUMP 
+ #define NL_WATER_BUMP 0.04   
+ #undef NL_WATER_WAVE
+ #undef NL_UNDERWATER_WAVE
+ #undef NL_PLANTS_WAVE
+ #undef NL_LANTERN_WAVE
+ #undef NL_WAVE_SPEED
+ #undef NL_PLANTS_WAVE   
+ #undef NL_LANTERN_WAVE  
+ #undef NL_MIST_DENSITY    
+ #undef NL_RAIN_MIST_OPACITY 
+ #define NL_MIST_DENSITY 0.2      
+ #define NL_RAIN_MIST_OPACITY 0.2 
+ #undef NL_CLOUDY_FOG 
+ #undef NL_GALAXY_STARS
+ #undef NL_GLOW_LEAK
+ #undef NL_LAVA_NOISE
+ #undef NL_WATER_CLOUD_REFLECTION
+#endif
 
 #endif

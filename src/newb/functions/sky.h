@@ -43,23 +43,40 @@ vec3 getSkyFactors(vec3 FOG_COLOR) {
 }
 
 vec3 getZenithCol(float rainFactor, vec3 FOG_COLOR, vec3 fs) {
-  vec3 zenithCol = NL_NIGHT_ZENITH_COL*(1.0-FOG_COLOR.b);
-  zenithCol += NL_DAWN_ZENITH_COL*((0.7*fs.x*fs.x) + (0.4*fs.x) + fs.y);
+  float day = pow(max(min(1.0 - FOG_COLOR.r * 1.2, 1.0), 0.0), 0.4);
+  float dawn = max(FOG_COLOR.r - FOG_COLOR.b, 0.0);
+  float night = pow(max(min(1.0 - FOG_COLOR.r * 1.5, 1.0), 0.0), 1.2);
+  vec3 dawncol = NL_DAWN_ZENITH_COL;
+  dawncol *= mix(1.0, 0.5, day);
+  vec3 nightcol = NL_NIGHT_ZENITH_COL;
+  nightcol *= mix(1.0, 0.0, dawn);
+  nightcol *= max(0.0, 1.0)*night;
+ 
+  vec3 zenithCol = nightcol*(1.0-FOG_COLOR.b);
+  zenithCol += dawncol*((0.7*fs.x*fs.x) + (0.4*fs.x) + fs.y);
   zenithCol = mix(zenithCol, (0.7*fs.x*fs.x + 0.3*fs.x)*NL_DAY_ZENITH_COL, fs.x*fs.x);
-  zenithCol = mix(zenithCol*(1.0+0.5*rainFactor), NL_RAIN_ZENITH_COL*fs.z*13.2, rainFactor);
+  zenithCol = mix(zenithCol*(1.0+0.5*rainFactor), mix(zenithCol, NL_RAIN_ZENITH_COL*fs.z*13.2, 0.8), rainFactor);
 
   return zenithCol;
 }
 
 vec3 getHorizonCol(float rainFactor, vec3 FOG_COLOR, vec3 fs) {
-  vec3 horizonCol = NL_NIGHT_HORIZON_COL*(1.0-FOG_COLOR.b); 
-  horizonCol += NL_DAWN_HORIZON_COL*(((0.7*fs.x*fs.x) + (0.3*fs.x) + fs.y)*1.9); 
+  
+  float day = pow(max(min(1.0 - FOG_COLOR.r * 1.2, 1.0), 0.0), 0.4);
+  float dawn = max(FOG_COLOR.r - FOG_COLOR.b, 0.0);
+  float night = pow(max(min(1.0 - FOG_COLOR.r * 1.5, 1.0), 0.0), 1.2);
+  vec3 dawncol = NL_DAWN_HORIZON_COL;
+  dawncol *= mix(1.0, 0.5, day);
+  vec3 nightcol = NL_NIGHT_HORIZON_COL;
+  nightcol *= mix(1.0, 0.0, dawn);
+  nightcol *= max(0.0, 1.0)*night;
+  vec3 horizonCol = nightcol*(1.0-FOG_COLOR.b); 
+  horizonCol += dawncol*(((0.7*fs.x*fs.x) + (0.3*fs.x) + fs.y)*1.9); 
   horizonCol = mix(horizonCol, 2.0*fs.x*NL_DAY_HORIZON_COL, fs.x*fs.x);
-  horizonCol = mix(horizonCol, NL_RAIN_HORIZON_COL*fs.z*19.6, rainFactor);
+  horizonCol = mix(horizonCol, mix(horizonCol,NL_RAIN_HORIZON_COL*fs.z*19.6, 0.9), rainFactor);
 
   return horizonCol;
 }
-
 // tinting on horizon col
 vec3 getHorizonEdgeCol(vec3 horizonCol, float rainFactor, vec3 FOG_COLOR) {
   float val = 2.1*(1.1-FOG_COLOR.b)*FOG_COLOR.g*(1.0-rainFactor);
@@ -70,22 +87,30 @@ vec3 getHorizonEdgeCol(vec3 horizonCol, float rainFactor, vec3 FOG_COLOR) {
 
 // 1D sky with three color gradient
 vec3 renderOverworldSky(nl_skycolor skycol, vec3 viewDir) {
+  if(viewDir.y >= 0.0){
+  viewDir.y = pow(abs(viewDir.y), 0.6);
+  }
+  if(viewDir.y < 0.0){
+  viewDir.y = -pow(abs(1.4*viewDir.y), 1.0);
+  }
   float h = 1.0-viewDir.y*viewDir.y;
   float hsq = h*h;
   if (viewDir.y < 0.0) {
-    hsq = 0.4 + 0.6*hsq*hsq;
+    hsq = 1.0 + 0.0*hsq*hsq;
   }
 
   // gradient 1  h^16
   // gradient 2  h^8 mix h^2
   float gradient1 = hsq*hsq;
   gradient1 *= gradient1;
-  float gradient2 = 0.3*gradient1 + 0.17*hsq;
+  float gradient2 = 0.25*gradient1 + 0.1*hsq;
   gradient1 *= gradient1;
 
   vec3 sky = mix(skycol.horizon, skycol.horizonEdge, gradient1);
   sky = mix(skycol.zenith, skycol.horizon, gradient2);
-
+ if(viewDir.y < 0.0){
+  sky *= mix(mix(mix(mix(1.0, 0.85,smoothstep(0.0, -0.25, viewDir.y)), 0.7, smoothstep(0.0, -0.5, viewDir.y)),0.55,smoothstep(0.0, -0.75, viewDir.y)), 0.4, smoothstep (0.0, -1.0, viewDir.y));
+  }
   return sky;
 }
 
@@ -95,13 +120,17 @@ vec3 getSunBloom(float viewDirX, vec3 horizonEdgeCol, vec3 FOG_COLOR) {
   factor *= factor;
   factor *= factor;
 
-  float spread = smoothstep(0.0, 1.0, abs(viewDirX));
+  float spread = smoothstep(0.0, 2.5, abs(viewDirX*viewDirX*viewDirX*viewDirX*viewDirX*viewDirX*viewDirX));
   float sunBloom = spread*spread;
-  sunBloom = 0.5*spread + sunBloom*sunBloom*sunBloom*1.5;
-
-  return NL_MORNING_SUN_COL*horizonEdgeCol*(sunBloom*factor*factor);
+  sunBloom = min(length(spread), 1.0);
+  float day = pow(max(min(1.0 - FOG_COLOR.r * 1.2, 1.0), 0.0), 0.4);
+  float dawn = max(FOG_COLOR.r - FOG_COLOR.b, 0.0);
+  float night = pow(max(min(1.0 - FOG_COLOR.r * 1.5, 1.0), 0.0), 1.2);
+  vec3 morningcol = 2.0*NL_MORNING_SUN_COL;
+  morningcol -= vec3(0.0,0.0,1.2);
+  
+  return morningcol*horizonEdgeCol*(sunBloom*factor*factor);
 }
-
 
 vec3 renderEndSky(vec3 horizonCol, vec3 zenithCol, vec3 viewDir, float t) {
   t *= 0.1;

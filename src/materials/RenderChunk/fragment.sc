@@ -170,6 +170,19 @@ diffuse.rgb *= 1.0-dirfac*abs(normal.x);
 
 }
 
+vec3 shift = diffuse.rgb;
+const vec2 oc = vec2(1.0, -1.0)*0.00175;
+vec3 normalmap = shift;
+shift -= texture2D(s_MatTexture, v_texcoord0 + oc*0.13).rgb;
+shift += texture2D(s_MatTexture, v_texcoord0 - oc*0.23).rgb;
+shift += pow(shift, vec3_splat(1.5));
+normalmap = clamp(diffuse.rgb*0.8 + (diffuse.rgb*shift)*0.2, 0.0, 1.0);
+
+#ifdef NORMALMAP
+diffuse.rgb = normalmap;
+#endif
+  
+
   vec3 glow = nlGlow(s_MatTexture, v_texcoord0, v_extra.a);
 
   diffuse.rgb *= diffuse.rgb;
@@ -198,7 +211,7 @@ diffuse.rgb *= 1.0-dirfac*abs(normal.x);
     specular += specular*specular*specular*specular;
     
     specular *= max(FogColor.r-FogColor.b, 0.0);
-    vec3 sunrefl = 5.0*skycol.horizonEdge * specular * specular;
+    vec3 sunrefl = 4.0*skycol.horizonEdge * specular * specular * specular;
     sunrefl += sunrefl;
     
  vec3 torchColor;
@@ -309,16 +322,6 @@ if(!env.end){
 
 //#define NORMALMAP
 
-#ifdef NORMALMAP
-vec3 nmTex = getNormalMapFromTex(v_texcoord0, vec2(15990.0,15990.0), 1.2, s_MatTexture).xzy;
-    
-
-  float lightIntensity = max(dot(nmTex, normalize(vec3(1.0,1.0,0.5))), 0.0);
-    vec3 col = diffuse.rgb;
-    diffuse.rgb += diffuse.rgb*lightIntensity;
-    diffuse.rgb *= 0.8;
-    diffuse.rgb = mix(col, diffuse.rgb, 0.4);
-#endif
 
   if (v_extra.b > 0.9) {
   #ifdef WATER_REFLECTION
@@ -329,9 +332,8 @@ vec3 nmTex = getNormalMapFromTex(v_texcoord0, vec2(15990.0,15990.0), 1.2, s_MatT
     diffuse.rgb += sunrefl2;
     }
   #else
-  
-    diffuse.rgb += sunrefl*v_refl.a;
     diffuse.rgb += v_refl.rgb*v_refl.a;
+    diffuse.rgb += sunrefl*v_refl.a;
   #endif
   
     diffuse.rgb += torchColor*pow(v_lightmapUV.x * 1.2, 7.0);

@@ -6,13 +6,20 @@
 
 #ifndef INSTANCING
   #include <newb/main.sh>
+  uniform vec4 ViewPositionAndTime;
+uniform vec4 FogColor;
   uniform vec4 FogAndDistanceControl;
 #endif
+
 
 void main() {
   #ifndef INSTANCING
     vec3 viewDir = normalize(v_worldPos);
 
+  float day = pow(max(min(1.0 - FogColor.r * 1.2, 1.0), 0.0), 0.4);
+  float night = pow(max(min(1.0 - FogColor.r * 1.5, 1.0), 0.0), 1.2);
+  float dusk = max(FogColor.r - FogColor.b, 0.0);
+  
     nl_environment env;
     env.end = false;
     env.nether = false;
@@ -28,7 +35,9 @@ void main() {
 
     vec3 skyColor = nlRenderSky(skycol, env, -viewDir, v_fogColor, v_underwaterRainTime.z);
     #ifdef NL_SHOOTING_STAR
-      skyColor += NL_SHOOTING_STAR*nlRenderShootingStar(viewDir, v_fogColor, v_underwaterRainTime.z);
+      vec3 shstar = NL_SHOOTING_STAR*nlRenderShootingStar(viewDir, v_fogColor, v_underwaterRainTime.z);
+      shstar *= max(0.0, 1.0)*night;
+      skyColor += shstar;
     #endif
     #ifdef NL_GALAXY_STARS
       skyColor += NL_GALAXY_STARS*nlRenderGalaxy(viewDir, v_fogColor, env, v_underwaterRainTime.z);

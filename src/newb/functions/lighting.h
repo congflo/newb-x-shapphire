@@ -13,17 +13,25 @@ vec3 sunLightTint(float dayFactor, float rain, vec3 FOG_COLOR) {
   float tintFactor = FOG_COLOR.g + 0.1*FOG_COLOR.r;
   float noon = clamp((tintFactor-0.37)/0.45,0.0,1.0);
   float morning = clamp((tintFactor-0.05)*3.125,0.0,1.0);
-
+  
+  float day = pow(max(min(1.0 - FOG_COLOR.r * 1.2, 1.0), 0.0), 0.4);
+  float dawn = max(FOG_COLOR.r - FOG_COLOR.b, 0.0);
+  float night = pow(max(min(1.0 - FOG_COLOR.r * 1.5, 1.0), 0.0), 1.2);
+  
+  vec3 morningcol = NL_MORNING_SUN_COL;
+  vec3 nightcol = NL_NIGHT_SUN_COL;
+  morningcol *= max(0.8, 1.0)*dawn;
+  nightcol *= max(0.0,1.0)*night;
   vec3 clearTint = mix(
-    mix(NL_NIGHT_SUN_COL, NL_MORNING_SUN_COL, morning),
-    mix(NL_MORNING_SUN_COL, NL_NOON_SUN_COL, noon),
+    mix(nightcol, morningcol, morning),
+    mix(morningcol, NL_NOON_SUN_COL, noon),
     dayFactor
   );
-
+  clearTint *= 1.0-0.35*rain;
   float r = 1.0-rain;
   r *= r;
 
-  return mix(vec3(0.65,0.65,0.75), clearTint, r*r);
+  return mix(mix(vec3(0.85,0.85,0.86), vec3(0.3,0.5,0.7), night), clearTint, r*r);
 }
 
 vec3 nlLighting(
@@ -76,7 +84,7 @@ vec3 nlLighting(
     float shadow = step(0.93, uv1.y);
     shadow = max(shadow, (1.0 - NL_SHADOW_INTENSITY + (0.6*NL_SHADOW_INTENSITY*nightFactor))*lit.y);
     shadow *= shade > 0.8 ? 1.0 : 0.8;
-
+    
     // shadow cast by simple cloud
     #ifdef NL_CLOUD_SHADOW
       shadow *= smoothstep(0.6, 0.1, cloudNoise2D(2.0*wPos.xz*NL_CLOUD1_SCALE, t, env.rainFactor));
@@ -87,7 +95,7 @@ vec3 nlLighting(
     light += dirLight*sunLightTint(dayFactor, env.rainFactor, FOG_COLOR);
 
     // extra indirect light
-    light += vec3_splat(0.3*lit.y*uv1.y*(1.2-shadow)*lightIntensity);
+    light += vec3_splat(0.0*lit.y*uv1.y*(1.2-shadow)*lightIntensity);
 
     // torch light
     light += torchLight*(1.0-(max(shadow, 0.65*lit.y)*dayFactor*(1.0-0.3*env.rainFactor)));
@@ -164,15 +172,14 @@ vec4 nlEntityEdgeHighlightPreprocess(vec2 texcoord) {
   return 2.0*step(edgeMap, vec4_splat(0.5)) - 1.0;
 }
 
-vec3 nlLavaNoise(vec3 tiledCpos, float t) {
+vec4 nlLavaNoise(vec3 tiledCpos, float t) {
   t *=  NL_LAVA_NOISE_SPEED;
-  float n = fastVoronoi2(1.12*tiledCpos.xz + t, 1.8);
-  n *= fastVoronoi2(4.48*tiledCpos.xz + t, 1.5);
-  n = 1.0 - n*n*n;
-  n = 1.0 - n*n;
-  float n2 = n*n;
-  n2 *= n2;
-  return vec3(n, n2, n2);
+  vec3 p = NL_CONST_PI_HALF*tiledCpos;
+   float d = fastVoronoi2(4.3*tiledCpos.xz + t, 2.0);
+   float n = sin(2.0*(p.x+p.y+p.z) + 1.7*sin(2.0*d + 4.0*(p.x-p.z)) + 4.0*t);
+   n = 0.3*d*d +  0.7*n*n;
+   n *= n;
+   return vec4(mix(vec3(0.7, 0.4, 0.0), vec3_splat(1.5), n),n);
 }
 
 #endif
