@@ -45,7 +45,7 @@ float cloudDf(vec3 pos, float rain, vec2 boxiness) {
   u *= u*(3.0 - 2.0*u);
 
   vec4 r = vec4(rand(p0), rand(p0+vec2(1.0,0.0)), rand(p0+vec2(1.0,1.0)), rand(p0+vec2(0.0,1.0)));
-  r = smoothstep(0.1651+0.2*rain, 0.165+0.2*rain*rain, r); // rain transition
+  r = smoothstep(0.2051+0.2*rain, 0.205+0.2*rain*rain, r); // rain transition
 
   float n = mix(mix(r.x,r.y,u.x), mix(r.w,r.z,u.x), u.y);
 
@@ -144,12 +144,12 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
   c = smoothstep(trcd.x, trcd.y, c);
 
   // shadow
-  b *= smoothstep(0.2, 0.8, b);
-  d *= smoothstep(0.2, 0.8, d);
+  b *= smoothstep(0.2, 0.4, b);
+  d *= smoothstep(0.2, 0.4, d);
 
   vec4 col;
   col.a = c + a*(1.0-c);
-  col.rgb = 0.5*horizonCol;
+  col.rgb =  (mix(horizonCol, zenithCol ,0.8)+horizonCol)*0.4 ;
   col.rgb = mix(col.rgb, zenithCol*0.95, shadow*mix(d, b, a));
   col.rgb *= 1.0-0.5*rain;
   
@@ -190,7 +190,7 @@ vec4 renderCloudCirrus(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenith
 
   vec4 col;
   col.a = a + c*(1.0-a);
-  col.rgb = 0.5*horizonCol;
+  col.rgb =  (mix(horizonCol, zenithCol ,0.8)+horizonCol)*0.4 ;
   col.rgb = mix(col.rgb, zenithCol, shadow*mix(b, d, c));
   col.rgb *= 1.0-0.5*rain;
   return col;

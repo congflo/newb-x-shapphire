@@ -38,7 +38,12 @@ void main() {
       #endif
       
       color.a *= v_color0.a;
+      if(vDir.y >= 0.0){
       color.a *= smoothstep(0.1, 0.6, vDir.y);
+      } else {
+      color.a *= smoothstep(-0.1, -0.6, vDir.y);
+      }
+      
     #else
       vDir.xz *= 0.3 + v_color0.w; // height parallax
      float a = 0.8; // or -ve
@@ -57,7 +62,8 @@ void main() {
       vec3 additional = NL_DAWN_ZENITH_COL;
       additional *= max(0.0, 1.0)*dusk;
       clouds.rgb += additional;
-      clouds.rgb *= 1.0-0.9*dusk;
+      clouds.rgb *= 1.0-0.6*dusk;
+      clouds.rgb *= 1.0+1.0*night;
       
       color = clouds;
       

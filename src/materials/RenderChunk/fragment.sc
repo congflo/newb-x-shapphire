@@ -202,8 +202,10 @@ diffuse.rgb = normalmap;
   #endif
 
   diffuse.rgb *= color.rgb;
+  
+  #ifndef ALPHA_TEST
   diffuse.rgb += glow;
- 
+  #endif
    
     float specular = smoothstep(SUN_REFL, 0.0, abs(viewDir.z));
     specular *= specular*smoothstep(0.6,1.0,abs(viewDir.x));

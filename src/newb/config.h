@@ -37,7 +37,7 @@
 #define NL_TINT_HIGH vec3(1.4,0.7,0.3) // color tint for light tone
 
 /* Terrain lighting */
-#define NL_SUN_INTENSITY 3.2   // 0.5 weak ~ 5.0 bright
+#define NL_SUN_INTENSITY 3.0   // 0.5 weak ~ 5.0 bright
 #define NL_TORCH_INTENSITY 1.5  // 0.5 weak ~ 3.0 bright
 #define NL_NIGHT_BRIGHTNESS 0.3 // 0.0 dark ~ 2.0 bright
 #define NL_CAVE_BRIGHTNESS 0.5  // 0.0 dark ~ 2.0 bright
@@ -88,7 +88,7 @@
 #define NL_GLOW_TEX 8.0           // 0.4 weak ~ 8.0 bright
 //#define NL_GLOW_SHIMMER 0.8       // [toggle] 0.1 subtle ~ 1.0 100% shimmer
 #define NL_GLOW_SHIMMER_SPEED 0.9 // 0.5 slow - 2.0 fast
-#define NL_GLOW_LEAK 0.3        // [toggle] 0.08 subtle ~ 1.0 100% brightness of NL_GLOW_TEX
+//#define NL_GLOW_LEAK 0.3        // [toggle] 0.08 subtle ~ 1.0 100% brightness of NL_GLOW_TEX
 
 /* Waving */
 #define NL_PLANTS_WAVE 0.07    // [toggle] 0.02 gentle ~ 0.4 violent
@@ -134,11 +134,11 @@
 #define NL_CLOUD1_OPACITY 0.8              // 0.0 invisible ~ 1.0 opaque
 
 /* Rounded cloud settings */
-#define NL_CLOUD2_THICKNESS 2.4      // 0.5 slim ~ 5.0 fat
+#define NL_CLOUD2_THICKNESS 2.5      // 0.5 slim ~ 5.0 fat
 #define NL_CLOUD2_RAIN_THICKNESS 2.6 // 0.5 slim ~ 5.0 fat
 #define NL_CLOUD2_STEPS 9            // 3 low quality ~ 16 high quality
-#define NL_CLOUD2_SCALE vec2(0.025, 0.025)     // 0.003 large ~ 0.3 tiny
-#define NL_CLOUD2_SHAPE vec2(0.9, 0.9)       // 0.0 round ~ 1.0 box
+#define NL_CLOUD2_SCALE vec2(0.027, 0.027)     // 0.003 large ~ 0.3 tiny
+#define NL_CLOUD2_SHAPE vec2(0.6, 0.6)       // 0.0 round ~ 1.0 box
 #define NL_CLOUD2_DENSITY 100.0       // 1.0 blurry ~ 100.0 sharp
 #define NL_CLOUD2_VELOCITY 1.5       // 0.0 static ~ 4.0 very fast
 
