@@ -116,8 +116,8 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
   t *= velocity;
 
   // layer 1
-  p = 1.8 * p + vec2(8.8, 7.2);
-  
+  p = 1.8 * p + vec2(6.8, 5.2) + vec2(6.8, 5.6) + vec2(5.6, 3.2);
+  //p = 1.0- p.yx;
   p = p.yx;
   t *= 0.5;
   float a = cloudsNoiseVr(p, t);
@@ -126,11 +126,11 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
 
   // layer 2
   p=p.xy;
-  p = 2.8 * p + vec2(2.8, 2.2);
+  p = 2.8 * p + vec2(5.8, 5.2);
 
   float c = cloudsNoiseVr(p, t);
   float d = cloudsNoiseVr(p + NL_CLOUD3_SHADOW_OFFSET*scale, t);
-  
+  vec2 po = p;
   float e = cloudsNoiseVr(p*0.8, t);
   c = mix(c, e, c);
   float f = cloudsNoiseVr(p*0.8 + NL_CLOUD3_SHADOW_OFFSET*scale, t);
@@ -138,15 +138,15 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
   
   // higher = less clouds thickness
   // lower separation betwen x & y = sharper
-  vec2 tr = mix(vec2(0.8, 0.9), vec2(0.8, 1.2), rain)- 0.35 - 0.24*rain;
+  vec2 tr = mix(vec2(0.78, 0.88), vec2(0.78, 1.2), rain)- 0.35 - 0.24*rain;
   vec2 trcd = mix(vec2(0.7, 0.85), vec2(0.7, 1.05), rain)- 0.35 - 0.26*rain;
   a = smoothstep(tr.x, tr.y, a);
   c = smoothstep(trcd.x, trcd.y, c);
 
   // shadow
-  b *= smoothstep(0.2, 0.4, b);
-  d *= smoothstep(0.2, 0.4, d);
-
+  b *= smoothstep(0.2, 0.5, b);
+  d *= smoothstep(0.2, 0.5, d);
+  
   vec4 col;
   col.a = c + a*(1.0-c);
   col.rgb =  (mix(horizonCol, zenithCol ,0.8)+horizonCol)*0.4 ;

@@ -124,7 +124,7 @@ void main() {
       color.rgb += g*mix(daycol,dawncol, dusk);
     }
 
-    //color.rgb += lensflare(v_pos.xz, v_uvpos.xy);
+    //color.rgb += lensflare(v_pos.xz, v_uvpos.xz);
     //color.rgb = cc(color.rgb, 0.5, 0.1);
     
     if (max(abs(v_pos.x),abs(v_pos.z)) < 0.5/10.0) {

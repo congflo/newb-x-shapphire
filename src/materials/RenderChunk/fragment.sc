@@ -138,36 +138,24 @@ float time = ViewPositionAndTime.w;
   #endif
   
   float shadowmap = smoothstep(0.875, 0.855, pow(uvl.y,2.0));
-  shadowmap = mix(shadowmap, 0.0, env.rainFactor);
-  shadowmap = mix(shadowmap,0.0,pow(uvl.x * 1.2, 7.0));
-  shadowmap = mix(shadowmap, shadowmap*0.5, night);
+  shadowmap *= mix(1.0,0.0,env.rainFactor);
+  shadowmap *= mix(1.0,0.0,uvl.x);
+  shadowmap *= mix(1.0, 0.5, night);
   diffuse.rgb *= 1.0-0.3*shadowmap;
-  
-  
-    vec3 cPos = v_position.xyz;
-  vec3 bPos = fract(cPos);
-  vec3 tiledCpos = fract(cPos*0.0625);
-  
-  vec2 lit = v_lightmapUV*v_lightmapUV;
-  bool isColored = v_color0.r != v_color0.g || v_color0.r != v_color0.b;
-  float shade = isColored ? v_color0.g*1.5 : v_color0.g; 
-  
-
   
 vec3 normal = normalize(cross(dFdx(v_position),dFdy(v_position)));
 float dirfac = 0.25;
-  dirfac = mix(mix(dirfac, 0.0, smoothstep(0.875, 0.855, pow(uvl.y,2.0))),0.0, pow(uvl.x * 1.2, 7.0));
+  dirfac *= mix(1.0, 0.0, smoothstep(0.875, 0.855, pow(uvl.y,2.0)));
+  dirfac *= mix(1.0,0.0, uvl.x);
 if (!env.underwater) {
-  dirfac = mix(dirfac, 0.0, env.rainFactor);
+  dirfac *= mix(1.0, 0.0, env.rainFactor);
 }
 
 #if NL_CLOUD_TYPE == 0
 dirfac *= 0.0;
 #endif
 if (!env.nether && !env.end) {
-
 diffuse.rgb *= 1.0-dirfac*abs(normal.x);
-
 }
 
 vec3 shift = diffuse.rgb;
@@ -243,35 +231,6 @@ vec3 waternormal = getWaterNormalMapFromHeight(v_position.xz*vec2(1.0,-1.0)+0.2*
  //delete later
  vec3 viewD = viewDir;
  
-vec3 c_vDir = normalize(v_color2.xyz);
-c_vDir = reflect(c_vDir, waternormal);
-c_vDir.yz = -c_vDir.yz;
- 
-vec3 CloudPos = v_worldPos;
-vec3 dirAlt = normalize(cross(dFdx(v_position), dFdy(v_position)));
-float dy = max(dirAlt.y, -dirAlt.y);
-      
-vec3 vDir = normalize(ViewPositionAndTime.xyz);
-    
-vec2 para = vDir.xz/vDir.y;
-    
-vec3 projectedPos = ViewPositionAndTime.xyz;
-    
-projectedPos.xz += para*80.0;
-
-vDir.y = mix(vDir.y, -vDir.y, dy);
-      
-vDir = reflect(vDir, waternormal);
-      
-CloudPos.xz = 80.0*vDir.xz/vDir.y;
-      
-CloudPos.xz = mix(CloudPos.xz,-CloudPos.xz, dy);
-      
-/* for cloud2 layer2 only */
-vec2 parallax = vDir.xz / abs(vDir.y) * 143.0;
-vec3 offsetPos = CloudPos.xyz;
-offsetPos.xz += parallax;
-
 vec3 skyrefl = nlSky(skycol, env, viewD, FogColor.rgb, ViewPositionAndTime.w);
  float specular2 = smoothstep(0.8, 0.0, abs(viewD.z));
     specular2 *= specular2*smoothstep(0.6,1.0,abs(viewD.x));
@@ -322,7 +281,7 @@ if(!env.end){
     #undef NL_WATER_TINT
     #define NL_WATER_TINT skycolor
 
-//#define NORMALMAP
+
 
 
   if (v_extra.b > 0.9) {

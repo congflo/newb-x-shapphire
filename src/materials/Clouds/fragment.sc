@@ -49,7 +49,7 @@ void main() {
      float a = 0.8; // or -ve
      float cosa = cos(a); float sina = sin(a);
       
-      vec2 p = 3.3*vDir.xz/(0.08 + 0.25*abs(vDir.y));
+      vec2 p = 3.0*vDir.xz/(0.08 + 0.25*abs(vDir.y));
            p = mul(p, mtxFromRows(vec2(cosa, sina), vec2(-sina, cosa)));
       vec4 clouds = renderClouds(p, v_color2.w, v_color1.w, v_color2.rgb, v_color1.rgb, NL_CLOUD3_SCALE, NL_CLOUD3_SPEED, NL_CLOUD3_SHADOW);
           float b = 0.8;
