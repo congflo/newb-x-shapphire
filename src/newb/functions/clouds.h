@@ -144,8 +144,8 @@ vec4 renderClouds(vec2 p, float t, float rain, vec3 horizonCol, vec3 zenithCol, 
   c = smoothstep(trcd.x, trcd.y, c);
 
   // shadow
-  b *= smoothstep(0.2, 0.5, b);
-  d *= smoothstep(0.2, 0.5, d);
+  b *= smoothstep(0.2, 0.8, b);
+  d *= smoothstep(0.2, 0.8, d);
   
   vec4 col;
   col.a = c + a*(1.0-c);
