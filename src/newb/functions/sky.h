@@ -88,7 +88,7 @@ vec3 getHorizonEdgeCol(vec3 horizonCol, float rainFactor, vec3 FOG_COLOR) {
 // 1D sky with three color gradient
 vec3 renderOverworldSky(nl_skycolor skycol, vec3 viewDir) {
   if(viewDir.y >= 0.0){
-  viewDir.y = pow(abs(viewDir.y), 0.6);
+  viewDir.y = pow(abs(viewDir.y*1.1), 0.7);
   }
   if(viewDir.y < 0.0){
   viewDir.y = -pow(abs(1.4*viewDir.y), 1.0);
