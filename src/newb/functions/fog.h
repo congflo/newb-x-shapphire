@@ -21,8 +21,9 @@ float nlRenderGodRayIntensity(vec3 cPos, vec3 worldPos, float t, vec2 uv1, float
   // offset wPos (only works upto 16 blocks)
   vec3 wpos = worldPos;
   worldPos.yz = mul(worldPos.yz, mtxFromRows(vec2(cosa, sina), vec2(-sina, cosa)));
+  worldPos.xz *= 0.8;
   // offset wPos (only works upto 16 blocks)
-  vec3 offset = cPos - 20.0*fract(worldPos*0.0);
+  vec3 offset = cPos - 20.0*fract(worldPos*0.01);
   offset = abs(2.0*fract(offset*0.0625)-1.0);
   offset = offset*offset*(3.0-2.0*offset);
   //offset = 0.5 + 0.5*cos(offset*0.392699082);
@@ -34,17 +35,17 @@ float nlRenderGodRayIntensity(vec3 cPos, vec3 worldPos, float t, vec2 uv1, float
   float diff = dot(offset,vec3(0.1,0.2,1.0)) + 0.07*t;
   float mask = nrmof.x*nrmof.x;
 
-  float vol = sin(12.0*u + 1.5*diff)*sin(18.0*u + diff);
+  float vol = sin(16.0*u + 1.5*diff)*sin(18.0*u + diff);
   
   
   vol *= vol*mask*uv1.y*(1.0-mask*mask);
-  vol *= mix(1.0,0.5,smoothstep(0.1,0.9,relativeDist))/relativeDist;
-
+  
+  vol *= mix(0.9,0.9,smoothstep(0.1,0.9,relativeDist))/relativeDist;
   vol *= mix(0.0,1.0,smoothstep(0.0,1.0,abs(worldPos.x)*relativeDist));
   // dawn/dusk mask
   vol *= mix(0.0,1.0,max(FOG_COLOR.r-FOG_COLOR.b, 0.0));
-
-  vol = smoothstep(0.0, 1.0, vol);
+  vol = clamp(vol,0.0,0.5);
+  vol = smoothstep(0.0, 0.5, vol);
   return vol;
 }
 
