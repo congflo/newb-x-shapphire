@@ -314,8 +314,9 @@ if(!env.end){
     vec3 modelCamPos = ViewPositionAndTime.xyz - v_worldPos.xyz;
     float camDis = length(modelCamPos);
     float relativeDist = camDis / FogAndDistanceControl.z;
+
+  #ifdef NL_GODRAY
     float godray = NL_GODRAY*nlRenderGodRayIntensity(v_position.xyz, v_worldPos.xyz, ViewPositionAndTime.w, v_lightmapUV, relativeDist, fogColor.rgb); 
-  #ifdef NL_GODRAY 
     diffuse.rgb += NL_GODRAY*fogColor.rgb * godray;
     //fogColor.a = mix(fogColor.a, 1.0, godray);
   #endif
