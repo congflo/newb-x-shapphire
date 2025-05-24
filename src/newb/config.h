@@ -71,8 +71,8 @@
 #define NL_DAY_HORIZON_COL   vec3(1.0, 1.0, 1.0)*1.5
 #define NL_NIGHT_ZENITH_COL  vec3(0.0,0.05,0.1)
 #define NL_NIGHT_HORIZON_COL vec3(0.0,0.25,0.5)*1.2
-#define NL_RAIN_ZENITH_COL   vec3(0.5,0.5,0.6)
-#define NL_RAIN_HORIZON_COL  vec3(1.0,1.0,1.1)
+#define NL_RAIN_ZENITH_COL   vec3(0.5,0.5,0.7)*0.9
+#define NL_RAIN_HORIZON_COL  vec3(1.0,1.0,1.3)*0.9
 #define NL_END_ZENITH_COL    vec3(0.0,0.03,0.05)
 #define NL_END_HORIZON_COL   vec3(0.0,0.21,0.829)
 #define NL_DAWN_ZENITH_COL   vec3(0.23,0.2,0.23)
@@ -189,7 +189,7 @@
 #define SUN_REFL 0.5
  
 /* Fake godrays during sunrise/sunset */
-#define NL_GODRAY 0.45 // [toggle] 0.1 subtle ~ 0.8 strong
+#define NL_GODRAY 0.4 // [toggle] 0.1 subtle ~ 0.8 strong
 
 /* Sky reflection */
 #define NL_GROUND_REFL 0.05       // [toggle] 0.2 slightly reflective ~ 1.0 fully reflect sky 

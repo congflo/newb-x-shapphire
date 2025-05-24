@@ -308,8 +308,16 @@ if(!env.end){
       diffuse.rgb += v_refl.rgb*mask;
     }
   }
-
-  diffuse.rgb = mix(diffuse.rgb, v_fog.rgb, v_fog.a);
+  
+ vec4 fogColor = v_fog;
+    vec3 modelCamPos = ViewPositionAndTime.xyz - v_worldPos.xyz;
+    float camDis = length(modelCamPos);
+    float relativeDist = camDis / FogAndDistanceControl.z;
+  #ifdef NL_GODRAY 
+    fogColor.a = mix(fogColor.a, 1.0, NL_GODRAY*nlRenderGodRayIntensity(v_position.xyz, v_worldPos.xyz, ViewPositionAndTime.w, v_lightmapUV, relativeDist, fogColor.rgb));
+  #endif
+  
+  diffuse.rgb = mix(diffuse.rgb, fogColor.rgb, fogColor.a);
 
      if (v_extra.b > 0.9){
      if(!env.underwater){
