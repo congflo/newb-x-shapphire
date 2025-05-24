@@ -201,6 +201,7 @@ diffuse.rgb = normalmap;
     specular += specular*specular*specular*specular;
     
     specular *= max(FogColor.r-FogColor.b, 0.0);
+    specular *= max(0.0,1.0)*(1.0-cave);
     vec3 sunrefl = 4.0*skycol.horizonEdge * specular * specular * specular;
     sunrefl += sunrefl;
     
@@ -313,8 +314,9 @@ if(!env.end){
     vec3 modelCamPos = ViewPositionAndTime.xyz - v_worldPos.xyz;
     float camDis = length(modelCamPos);
     float relativeDist = camDis / FogAndDistanceControl.z;
+    float godray = NL_GODRAY*nlRenderGodRayIntensity(v_position.xyz, v_worldPos.xyz, ViewPositionAndTime.w, v_lightmapUV, relativeDist, fogColor.rgb); 
   #ifdef NL_GODRAY 
-    fogColor.a = mix(fogColor.a, 1.0, NL_GODRAY*nlRenderGodRayIntensity(v_position.xyz, v_worldPos.xyz, ViewPositionAndTime.w, v_lightmapUV, relativeDist, fogColor.rgb));
+    diffuse.rgb += fogColor.rgb*godray;
   #endif
   
   diffuse.rgb = mix(diffuse.rgb, fogColor.rgb, fogColor.a);
